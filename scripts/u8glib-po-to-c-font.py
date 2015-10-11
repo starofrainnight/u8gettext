@@ -21,6 +21,8 @@ import struct
 import six
 import bdflib.reader
 import argparse
+import glob
+import polib
 
 """
 A class just for fix problem that bdflib can't recognize the new style 
@@ -59,6 +61,30 @@ def get_font_properties(file_path):
     
     return properties         
 
+def gather_characters_from_po_files(po_file_paths):
+    characters = set()
+    
+    # All visible ASCII charactes must have ..
+    for i in range(32, 127):
+        characters.add(chr(i))
+        
+    for afile_path in po_file_paths:
+        po_file = polib.pofile(afile_path)
+        for anentry in po_file.translated_entries():
+            for acharacter in anentry.msgid:                
+                characters.add(acharacter)
+                
+            for acharacter in anentry.msgstr:                
+                characters.add(acharacter)
+    
+        for anentry in po_file.untranslated_entries():
+            for acharacter in anentry.msgid:                
+                characters.add(acharacter)
+                
+            for acharacter in anentry.msgstr:                
+                characters.add(acharacter)
+                
+    return characters
     
 def main():
     program_description = 'A script to convert glyphs of characters in *.po to u8glib supported font array'
@@ -67,7 +93,6 @@ def main():
     parser.add_argument(
         '-f',
         '--font',
-        action=ReadableDirectoryAction,
         help='A bdf font which we will extract glyphs from.')
     parser.add_argument(
         '-p',
@@ -81,6 +106,9 @@ def main():
     # If the arguments not enough or not fit for the arguments formats, program
     # will exit from here
     args = parser.parse_args()
+    
+    # Analyse all charactes from *.po
+    characters = gather_characters_from_po_files(glob.glob(args.po))
 
     # Load font details from bdf file
     unifont_iterator = IteratorFixer(iter(open(args.font, "r").readlines()))
