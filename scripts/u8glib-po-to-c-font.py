@@ -109,6 +109,9 @@ def main():
     
     # Analyse all charactes from *.po
     characters = gather_characters_from_po_files(glob.glob(args.po))
+    characters = dict.fromkeys(characters, None)
+    
+    font_data = []
 
     # Load font details from bdf file
     unifont_iterator = IteratorFixer(iter(open(args.font, "r").readlines()))
@@ -123,9 +126,10 @@ def main():
     uppercase_a_start = 0
     lowercase_a_start = 0
     
-    # TODO Not yet initialized
-    encoding_start = 0
-    encoding_end = 0
+    # First encoding must not be 0, because u8glib depends on 0 to end 
+    # the string.
+    encoding_start = 1
+    encoding_end = encoding_start + len(characters)
     
     # FIXME We don't have these properties
     font_xascent = 0
@@ -145,26 +149,31 @@ def main():
         int(unifont_properties["FONT_DESCENT"]),
         font_xascent, font_xdecent,
         ) 
+    font_data.append(header)
     
-    encoding = 0x521b
+    for acharacter in six.iterkeys(characters):
+        encoding = ord(acharacter)
     
-    glyph = unifont[encoding]
+        glyph = unifont[encoding]
+        
+        glyph_header = struct.pack(">BBBbbb", 
+            glyph.bbW, glyph.bbH,
+            int((int(glyph.bbW) + 7)/8 * int(glyph.bbH)),
+            glyph.bbW,
+            glyph.bbX, glyph.bbY,   
+            )
     
-    glyph_header = struct.pack(">BBBbbb", 
-        glyph.bbW, glyph.bbH,
-        int((int(glyph.bbW) + 7)/8 * int(glyph.bbH)),
-        glyph.bbW,
-        glyph.bbX, glyph.bbY,   
-        )
-    
-    glyph_data = []
-    for row_pixels in glyph.get_data():
-        glyph_data.append(chr(int(row_pixels[:2], 16)))
-        glyph_data.append(chr(int(row_pixels[2:], 16)))
+        glyph_data = []
+        for row_pixels in glyph.get_data():
+            for i in range(0, len(row_pixels), 2):
+                glyph_data.append(chr(int(row_pixels[i:i+2], 16)))
                 
-    glyph_data = six.b(''.join(glyph_data))
+        glyph_data = six.b(''.join(glyph_data))
+        
+        font_data.append(glyph_header)
+        font_data.append(glyph_data)
     
-    font_data = header + glyph_header + glyph_data
+    font_data = six.b('').join(font_data)
     
 if __name__ == "__main__":
     main()
