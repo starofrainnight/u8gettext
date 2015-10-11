@@ -118,8 +118,6 @@ def main():
     unifont = bdflib.reader.read_bdf(unifont_iterator)
     unifont_properties = get_font_properties(args.font)
     
-    print("Font properties : %s" % unifont_properties)
-    
     first_glyph = unifont.glyphs[0]
     
     uppercase_a_height = 0 
