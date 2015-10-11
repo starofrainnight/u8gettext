@@ -14,6 +14,7 @@ our_packages = find_packages()
 our_requires = [
     "six>=1.3.0",
     "bdflib",
+    "polib",
     ]
     
 long_description=(
