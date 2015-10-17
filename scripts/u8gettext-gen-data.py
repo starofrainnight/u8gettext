@@ -241,7 +241,7 @@ def main():
     source_file_basename, source_file_ext = os.path.splitext(source_file_name)
     header_file_name = "%s.h" % source_file_basename
     header_file_path = os.path.join(source_file_dir, header_file_name)
-    font_varaint_name = "gU8glibCustomFont"
+    font_varaint_name = "gU8GettextFont"
    
     source_file = open(args.output, "wb")
     
