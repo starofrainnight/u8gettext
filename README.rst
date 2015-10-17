@@ -1,4 +1,5 @@
-u8glib_helper
+u8gettext
 ----------------------
 
-A series helper scripts for u8glib
+A series helper scripts for ArduinoU8gettext 
+
