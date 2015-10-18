@@ -138,14 +138,17 @@ def main():
     parser.add_argument(
         '-f',
         '--font',
+        required=True,
         help='A bdf font which we will extract glyphs from.')
     parser.add_argument(
         '-p',
         '--po', 
+        required=True,
         help='Gettext generated PO files pattern')
     parser.add_argument(
         '-o',
         '--output',
+        default='U8GettextData.cpp',
         help='Output C/C++ source file path')
     
     # If the arguments not enough or not fit for the arguments formats, program
