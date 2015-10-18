@@ -218,7 +218,10 @@ def main():
     font_data.append(header)
 
     u8g_encoding = encoding_start - 1
-    for acharacter in six.iterkeys(characters):
+    utf32_keys = [key for key in six.iterkeys(characters)]
+    utf32_keys.sort()
+    
+    for acharacter in utf32_keys:
         u8g_encoding += 1
         characters[acharacter] = u8g_encoding
         
