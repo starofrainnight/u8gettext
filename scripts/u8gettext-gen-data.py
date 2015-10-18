@@ -63,6 +63,21 @@ def get_font_properties(file_path):
     
     return properties
 
+def encode_as_c_string(str):
+    result = []
+    str_bytes = str.encode("utf-8")
+    for i in six.moves.range(0, len(str_bytes)):
+        ord_c = six.indexbytes(str_bytes, i)
+        
+        if (32 <= ord_c) and (ord_c <= 127):
+            result.append(chr(ord_c))
+        else:
+            hex_c = hex(ord_c)
+            hex_c = "\\" + hex_c[1:]
+            result.append(hex_c)
+        
+    return ''.join(result)
+
 def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     result = []
     
@@ -86,7 +101,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
         # Generate translations for each language
         result.append("static const U8GettextTranslation sU8GettextTranslations%s[] = \n{" % language_name)
         for entry in translated_entries:
-            result.append('\t{"%s", "%s"}' % (entry.msgid, entry.msgstr))        
+            result.append('\t{"%s", "%s"}' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))        
         result.append("};")
         result.append("static const size_t sU8GettextTranslationsLength%s = "
             "sizeof(sU8GettextTranslations) / sizeof(sU8GettextTranslations[0]);" % language_name)
