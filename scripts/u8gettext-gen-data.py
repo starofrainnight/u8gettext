@@ -85,12 +85,12 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     utf32_keys = [ord(key) for key in six.iterkeys(utf32_to_u8gchar_mappings)]
     utf32_keys.sort()
     
-    result.append("const U8GettextCharMapping __gU8GettextCharMappings[] = \n{")    
+    result.append("static const U8GettextCharMapping __gU8GettextCharMappings[] = \n{")    
     for key in utf32_keys:
         line = "\t{%s, %s,}, " % (hex(key), utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
     result.append("};")
-    result.append("const size_t __gU8GettextCharMappingCount = "
+    result.append("static const size_t __gU8GettextCharMappingCount = "
         "sizeof(__gU8GettextCharMappings) / sizeof(__gU8GettextCharMappings[0]);")
     
     for file_path in po_file_paths:
@@ -107,7 +107,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             "sizeof(sU8GettextTranslations%(language)s) / sizeof(sU8GettextTranslations%(language)s[0]);" % {"language":language_name})
                 
     # Generate languages 
-    result.append("const U8GettextLanguage __gU8GettextLanguages[] = \n{")  
+    result.append("static const U8GettextLanguage __gU8GettextLanguages[] = \n{")  
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
         result.append('\t{"%(language)s", '
@@ -116,7 +116,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             {"language":language_name})
         
     result.append("};")
-    result.append("const size_t __gU8GettextLanguagesLength = "
+    result.append("static const size_t __gU8GettextLanguagesLength = "
             "sizeof(__gU8GettextLanguages) / sizeof(__gU8GettextLanguages[0]);")
         
     return "\n".join(result)
@@ -279,14 +279,28 @@ def main():
     
     # Generate font data
     source_file.write(six.b("""
-const u8g_fntpgm_uint8_t %(font_varaint_name)s[] U8G_SECTION(".progmem.%(font_varaint_name)s") = 
+static const u8g_fntpgm_uint8_t %(font_varaint_name)s[] U8G_SECTION(".progmem.%(font_varaint_name)s") = 
 {
 %(font_data_source)s
 };
-const size_t %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_name)s) / sizeof(%(font_varaint_name)s[0]);
+static const size_t %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_name)s) / sizeof(%(font_varaint_name)s[0]);
     """ % {"font_varaint_name":font_varaint_name, 
         "font_data_source":font_data_source, 
         }))
+    
+    # Generate U8Gettext context struct variants
+    source_file.write(six.b("""
+const U8GettextContext __gU8GettextContext 
+{
+\t__gU8GettextLanguages,
+\t&__gU8GettextLanguagesLength,
+\t__gU8GettextFont,
+\t&__gU8GettextFontEncodingCount,
+\t__gU8GettextCharMappings,
+\t&__gU8GettextCharMappingCount,
+}; 
+"""
+    ))
     source_file.close()
     
     # Don't generate header files, they will be included in U8Gettext 
