@@ -69,7 +69,7 @@ def encode_as_c_string(str):
     for i in six.moves.range(0, len(str_bytes)):
         ord_c = six.indexbytes(str_bytes, i)
         
-        if (32 <= ord_c) and (ord_c <= 127):
+        if (32 <= ord_c) and (ord_c <= 126):
             result.append(chr(ord_c))
         else:
             hex_c = hex(ord_c)
@@ -87,7 +87,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     
     result.append("static const U8GettextCharMapping sU8GettextCharMappings[] = \n{")    
     for key in utf32_keys:
-        line = "\t{%s, %s,}, " % (hex(key), utf32_to_u8gchar_mappings[chr(key)])
+        line = "\t{%s, %s,}, " % (hex(key), utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
     result.append("};")
     result.append("static const size_t sU8GettextCharMappingsLength = "
@@ -125,8 +125,8 @@ def gather_characters_from_po_files(po_file_paths):
     characters = set()
     
     # All visible ASCII charactes must have ..
-    for i in range(32, 127):
-        characters.add(chr(i))
+    for i in six.moves.range(32, 127):
+        characters.add(six.unichr(i))
         
     for afile_path in po_file_paths:
         po_file = polib.pofile(afile_path)
