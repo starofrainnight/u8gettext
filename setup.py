@@ -23,8 +23,6 @@ long_description=(
      open("CHANGES.rst", "r").read()
      )
 
-our_scripts = glob.glob("scripts/*")
-
 setup(
     name=package_name,
     version="0.0.1",
@@ -44,5 +42,5 @@ setup(
     ],
     install_requires=our_requires,
     packages=our_packages,
-    scripts=our_scripts,
+    scripts=["scripts/u8gettext-gen-data.py"],
     )
