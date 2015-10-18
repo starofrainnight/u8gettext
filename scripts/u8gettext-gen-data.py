@@ -257,7 +257,6 @@ def main():
 """))
     
     # Generate origin text directly to u8glib font text table 
-    print(generate_languages_source(po_file_paths, characters))
     source_file.write(generate_languages_source(po_file_paths, characters).encode("utf-8"))
     
     # Generate font data
