@@ -91,7 +91,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     
     result.append("static const U8GettextCharMapping __gU8GettextCharMappings[] = \n{")    
     for key in utf32_keys:
-        line = "\t{%s, %s,}, " % (hex(key), utf32_to_u8gchar_mappings[six.unichr(key)])
+        line = "\t{0x%08X, 0x%02X,}, " % (key, utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
     result.append("};")
     result.append("static const size_t __gU8GettextCharMappingCount = "
