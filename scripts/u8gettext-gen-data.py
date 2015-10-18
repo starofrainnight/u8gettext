@@ -72,9 +72,13 @@ def encode_as_c_string(str):
         if (32 <= ord_c) and (ord_c <= 126):
             result.append(chr(ord_c))
         else:
-            hex_c = hex(ord_c)
-            hex_c = "\\" + hex_c[1:]
-            result.append(hex_c)
+            # Arduino Serial.print() have a strange behavior : 
+            # If we pass "\x0AFrom this" string to output, it will not
+            # correct output with a new line character and string 
+            # "From this", it will output "\xafrom this". Seems if we 
+            # have any hex number followed \x0XX, it can't parse correct.
+            # So we use octal number instead. 
+            result.append("\\%03o" % ord_c) 
         
     return ''.join(result)
 
