@@ -85,13 +85,13 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     utf32_keys = [ord(key) for key in six.iterkeys(utf32_to_u8gchar_mappings)]
     utf32_keys.sort()
     
-    result.append("static const U8GettextCharMapping sU8GettextCharMappings[] = \n{")    
+    result.append("const U8GettextCharMapping __gU8GettextCharMappings[] = \n{")    
     for key in utf32_keys:
         line = "\t{%s, %s,}, " % (hex(key), utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
     result.append("};")
-    result.append("static const size_t sU8GettextCharMappingsLength = "
-        "sizeof(sU8GettextCharMappings) / sizeof(sU8GettextCharMappings[0]);")
+    result.append("const size_t __gU8GettextCharMappingCount = "
+        "sizeof(__gU8GettextCharMappings) / sizeof(__gU8GettextCharMappings[0]);")
     
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
