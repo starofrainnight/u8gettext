@@ -89,13 +89,13 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     utf32_keys = [ord(key) for key in six.iterkeys(utf32_to_u8gchar_mappings)]
     utf32_keys.sort()
     
-    result.append("static const U8GettextCharMapping __gU8GettextCharMappings[] = \n{")    
+    result.append("static const U8GettextCharMapping __sU8GettextCharMappings[] = \n{")    
     for key in utf32_keys:
         line = "\t{0x%08X, 0x%02X,}, " % (key, utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
     result.append("};")
-    result.append("static const size_t __gU8GettextCharMappingCount = "
-        "sizeof(__gU8GettextCharMappings) / sizeof(__gU8GettextCharMappings[0]);")
+    result.append("static const size_t __sU8GettextCharMappingCount = "
+        "sizeof(__sU8GettextCharMappings) / sizeof(__sU8GettextCharMappings[0]);")
     
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
@@ -111,7 +111,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             "sizeof(sU8GettextTranslations%(language)s) / sizeof(sU8GettextTranslations%(language)s[0]);" % {"language":language_name})
                 
     # Generate languages 
-    result.append("static const U8GettextLanguage __gU8GettextLanguages[] = \n{")  
+    result.append("static const U8GettextLanguage __sU8GettextLanguages[] = \n{")  
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
         result.append('\t{"%(language)s", '
@@ -120,8 +120,8 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             {"language":language_name})
         
     result.append("};")
-    result.append("static const size_t __gU8GettextLanguagesLength = "
-            "sizeof(__gU8GettextLanguages) / sizeof(__gU8GettextLanguages[0]);")
+    result.append("static const size_t __sU8GettextLanguagesLength = "
+            "sizeof(__sU8GettextLanguages) / sizeof(__sU8GettextLanguages[0]);")
         
     return "\n".join(result)
     
@@ -266,7 +266,7 @@ def main():
     source_file_basename, source_file_ext = os.path.splitext(source_file_name)
     header_file_name = "%s.h" % source_file_basename
     header_file_path = os.path.join(source_file_dir, header_file_name)
-    font_varaint_name = "__gU8GettextFont"
+    font_varaint_name = "__sU8GettextFont"
    
     source_file = open(args.output, "wb")
     
@@ -299,12 +299,12 @@ static const size_t %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_n
     source_file.write(six.b("""
 const U8GettextContext __gU8GettextContext 
 {
-\t__gU8GettextLanguages,
-\t&__gU8GettextLanguagesLength,
-\t__gU8GettextFont,
-\t&__gU8GettextFontEncodingCount,
-\t__gU8GettextCharMappings,
-\t&__gU8GettextCharMappingCount,
+\t__sU8GettextLanguages,
+\t&__sU8GettextLanguagesLength,
+\t__sU8GettextFont,
+\t&__sU8GettextFontEncodingCount,
+\t__sU8GettextCharMappings,
+\t&__sU8GettextCharMappingCount,
 }; 
 """
     ))
