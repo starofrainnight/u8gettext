@@ -89,7 +89,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     utf32_keys = [ord(key) for key in six.iterkeys(utf32_to_u8gchar_mappings)]
     utf32_keys.sort()
     
-    result.append("static const U8GettextCharMapping __sU8GettextCharMappings[] = \n{")    
+    result.append("static const U8GettextCharMapping __sU8GettextCharMappings[] U8G_SECTION(\".progmem.__sU8GettextCharMappings\") = \n{")    
     for key in utf32_keys:
         line = "\t{0x%08X, 0x%02X,}, " % (key, utf32_to_u8gchar_mappings[six.unichr(key)])
         result.append(line)
