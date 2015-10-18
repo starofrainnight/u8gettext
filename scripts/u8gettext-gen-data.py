@@ -283,7 +283,7 @@ const u8g_fntpgm_uint8_t %(font_varaint_name)s[] U8G_SECTION(".progmem.%(font_va
 {
 %(font_data_source)s
 };
-const int %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_name)s) / sizeof(%(font_varaint_name)s[0]);
+const size_t %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_name)s) / sizeof(%(font_varaint_name)s[0]);
     """ % {"font_varaint_name":font_varaint_name, 
         "font_data_source":font_data_source, 
         }))
