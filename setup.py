@@ -6,7 +6,7 @@ use_pip()
 import glob
 from setuptools import setup, find_packages
 
-package_name = "u8glib_helper"
+package_name = "u8gettext"
 
 # Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages()
@@ -31,7 +31,7 @@ setup(
     author="Hong-She Liang",
     author_email="starofrainnight@gmail.com",
     url="https://github.com/starofrainnight/%s" % package_name,
-    description="A series helper scripts for u8glib",
+    description="A series helper scripts for U8Gettext library",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",        
