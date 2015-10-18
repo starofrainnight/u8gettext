@@ -103,8 +103,8 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
         for entry in translated_entries:
             result.append('\t{"%s", "%s"}' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))        
         result.append("};")
-        result.append("static const size_t sU8GettextTranslationsLength%s = "
-            "sizeof(sU8GettextTranslations) / sizeof(sU8GettextTranslations[0]);" % language_name)
+        result.append("static const size_t sU8GettextTranslationsLength%(language)s = "
+            "sizeof(sU8GettextTranslations%(language)s) / sizeof(sU8GettextTranslations%(language)s[0]);" % {"language":language_name})
                 
     # Generate languages 
     result.append("const U8GettextLanguage gU8GettextLanguages[] = \n{")  
