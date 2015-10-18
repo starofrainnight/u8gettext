@@ -107,7 +107,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             "sizeof(sU8GettextTranslations%(language)s) / sizeof(sU8GettextTranslations%(language)s[0]);" % {"language":language_name})
                 
     # Generate languages 
-    result.append("const U8GettextLanguage gU8GettextLanguages[] = \n{")  
+    result.append("const U8GettextLanguage __gU8GettextLanguages[] = \n{")  
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
         result.append('\t{"%(language)s", '
@@ -116,8 +116,8 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             {"language":language_name})
         
     result.append("};")
-    result.append("const size_t gU8GettextLanguagesLength = "
-            "sizeof(gU8GettextLanguages) / sizeof(gU8GettextLanguages[0]);")
+    result.append("const size_t __gU8GettextLanguagesLength = "
+            "sizeof(__gU8GettextLanguages) / sizeof(__gU8GettextLanguages[0]);")
         
     return "\n".join(result)
     
@@ -259,7 +259,7 @@ def main():
     source_file_basename, source_file_ext = os.path.splitext(source_file_name)
     header_file_name = "%s.h" % source_file_basename
     header_file_path = os.path.join(source_file_dir, header_file_name)
-    font_varaint_name = "gU8GettextFont"
+    font_varaint_name = "__gU8GettextFont"
    
     source_file = open(args.output, "wb")
     
