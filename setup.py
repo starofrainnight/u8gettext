@@ -3,6 +3,7 @@
 from rabird_bootstrap import use_pip
 use_pip()
 
+import sys
 import glob
 from setuptools import setup, find_packages
 
@@ -13,10 +14,20 @@ our_packages = find_packages()
     
 our_requires = [
     "six>=1.3.0",
-    "bdflib",
     "polib",
     ]
     
+if sys.platform == "win32":
+    try:
+        import bdflib
+    except:
+        import pip
+        # Because bdflib 1.0.1 currently in pypi can't install on windows, so 
+        # we install a modified version from our repository.
+        pip.main(["install", "https://gitlab.com/starofrainnight/bdflib/repository/archive.zip?ref=starofrainnight"])
+else:
+    our_requires.append("bdflib")
+
 long_description=(
      open("README.rst", "r").read()
      + "\n" +
