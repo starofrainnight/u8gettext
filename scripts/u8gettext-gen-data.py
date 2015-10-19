@@ -95,7 +95,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
         result.append(line)
     result.append("};")
     result.append("static const size_t __sU8GettextCharMappingCount = "
-        "sizeof(__sU8GettextCharMappings) / sizeof(__sU8GettextCharMappings[0]);")
+        "ITEM_COUNT_OF_ARRAY(__sU8GettextCharMappings);")
     
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
@@ -108,7 +108,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
             result.append('\t{"%s", "%s"}' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))        
         result.append("};")
         result.append("static const size_t sU8GettextTranslationsLength%(language)s = "
-            "sizeof(sU8GettextTranslations%(language)s) / sizeof(sU8GettextTranslations%(language)s[0]);" % {"language":language_name})
+            "ITEM_COUNT_OF_ARRAY(sU8GettextTranslations%(language)s);" % {"language":language_name})
                 
     # Generate languages 
     result.append("static const U8GettextLanguage __sU8GettextLanguages[] = \n{")  
@@ -121,7 +121,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
         
     result.append("};")
     result.append("static const size_t __sU8GettextLanguagesLength = "
-            "sizeof(__sU8GettextLanguages) / sizeof(__sU8GettextLanguages[0]);")
+            "ITEM_COUNT_OF_ARRAY(__sU8GettextLanguages);")
         
     return "\n".join(result)
     
@@ -279,6 +279,11 @@ def main():
 #include <U8Gettext.h> 
 #include <U8glib.h>
 
+#ifndef ITEM_COUNT_OF_ARRAY
+#define ITEM_COUNT_OF_ARRAY(array) (sizeof((array)) / sizeof((array)[0]))
+#endif // #ifndef ITEM_COUNT_OF_ARRAY
+ 
+
 """))
     
     # Generate origin text directly to u8glib font text table 
@@ -290,7 +295,7 @@ static const u8g_fntpgm_uint8_t %(font_varaint_name)s[] U8G_SECTION(".progmem.%(
 {
 %(font_data_source)s
 };
-static const size_t %(font_varaint_name)sEncodingCount = sizeof(%(font_varaint_name)s) / sizeof(%(font_varaint_name)s[0]);
+static const size_t %(font_varaint_name)sEncodingCount = ITEM_COUNT_OF_ARRAY(%(font_varaint_name)s);
     """ % {"font_varaint_name":font_varaint_name, 
         "font_data_source":font_data_source, 
         }))
