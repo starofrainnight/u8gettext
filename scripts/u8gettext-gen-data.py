@@ -231,7 +231,7 @@ def main():
         
         glyph_header = struct.pack(">BBBbbb", 
             glyph.bbW, glyph.bbH,
-            int((int(glyph.bbW) + 7)/8 * int(glyph.bbH)),
+            int((glyph.bbW + 7) // 8 * glyph.bbH),
             glyph.bbW,
             glyph.bbX, glyph.bbY,   
             )
