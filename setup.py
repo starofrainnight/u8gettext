@@ -9,7 +9,6 @@ from setuptools import setup, find_packages
 
 package_name = "u8gettext"
 
-# Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages()
     
 our_requires = [
