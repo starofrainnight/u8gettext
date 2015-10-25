@@ -105,7 +105,7 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
         # Generate translations for each language
         result.append("static const U8GettextTranslation sU8GettextTranslations%s[] = \n{" % language_name)
         for entry in translated_entries:
-            result.append('\t{"%s", "%s"}' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))        
+            result.append('\t{"%s", "%s"},' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))        
         result.append("};")
         result.append("static const size_t sU8GettextTranslationsLength%(language)s = "
             "ITEM_COUNT_OF_ARRAY(sU8GettextTranslations%(language)s);" % {"language":language_name})
