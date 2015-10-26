@@ -52,5 +52,9 @@ setup(
     ],
     install_requires=our_requires,
     packages=our_packages,
-    scripts=["scripts/u8gettext-gen-data.py"],
+    entry_points={
+        'console_scripts':[
+            'u8gettext-gen-data = u8gettext.console_scripts:gen_data',
+        ],
+    },
     )

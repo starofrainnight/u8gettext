@@ -150,7 +150,7 @@ def gather_characters_from_po_files(po_file_paths):
                 
     return characters
     
-def main():
+def gen_data():
     program_description = 'A script to convert glyphs of characters in *.po to u8glib supported font array'
     
     parser = argparse.ArgumentParser(description=program_description)
@@ -318,5 +318,3 @@ const U8GettextContext __gU8GettextContext
     # Don't generate header files, they will be included in U8Gettext 
     # library.
     
-if __name__ == "__main__":
-    main()
