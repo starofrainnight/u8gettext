@@ -97,18 +97,38 @@ def generate_languages_source(po_file_paths, utf32_to_u8gchar_mappings):
     result.append("static const size_t sCharMappingCount = "
         "ITEM_COUNT_OF_ARRAY(sCharMappings);")
 
+    po_index = 0
     for file_path in po_file_paths:
         language_name = os.path.splitext(os.path.basename(file_path))[0]
         po_file = polib.pofile(file_path)
         translated_entries = po_file.translated_entries()
 
         # Generate translations for each language
-        result.append("static const U8GettextTranslation sTranslations%s[] = \n{" % language_name)
+
+        # We have to generate variables for each text, otherwise the compiler
+        # won't compile them into program memory!
+        i = 0
         for entry in translated_entries:
-            result.append('\t{"%s", "%s"},' % (encode_as_c_string(entry.msgid), encode_as_c_string(entry.msgstr)))
+            result.append('static const char sMsgId%s_%s[] PROGMEM = "%s";' % (
+                po_index, i, encode_as_c_string(entry.msgid)))
+
+            result.append('static const char sMsgStr%s_%s[] PROGMEM = "%s";' % (
+                po_index, i, encode_as_c_string(entry.msgstr)))
+
+            i += 1
+
+        result.append('static const U8GettextTranslation sTranslations%s[] U8G_SECTION(".progmem.U8GettextsTranslations") = \n{' % language_name)
+        i = 0
+        for entry in translated_entries:
+            result.append('\t{(const U8GFChar*)&sMsgId%s_%s[0], (const U8GFChar*)&sMsgStr%s_%s[0]},' % (
+                po_index, i, po_index, i))
+            i += 1
+
         result.append("};")
         result.append("static const size_t sTranslationsLength%(language)s = "
             "ITEM_COUNT_OF_ARRAY(sTranslations%(language)s);" % {"language":language_name})
+
+        po_index += 1
 
     # Generate languages
     result.append("static const U8GettextLanguage sLanguages[] = \n{")
